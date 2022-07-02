@@ -10,7 +10,6 @@ import multiprocessing
 # weights for the detector and recognizer.
 pipeline = keras_ocr.pipeline.Pipeline()
 
-
 def get_image_data(image_url):
     #print(image_url)
     # Get a set of three example images, needs to be iterable
@@ -20,14 +19,19 @@ def get_image_data(image_url):
     # (word, box) tuples.
     prediction_groups = pipeline.recognize(image)
     #print(prediction_groups)
+    #NOTE: organize in a way to read left to right then top to bottom
+    #this should improve the accuracy
     total_findings = list(itertools.chain(*prediction_groups)) #flatten the data
+    #sorted_findings = sorted(total_findings, key=lambda x: (x[1][0][1], x[1][0][0]))
 
-    #print(total_findings)
+    #print(sorted_findings)
     all_words = []
     for pred in total_findings:
-            #print(pred[0])
+            # print(f"total prediction: {pred}")
+            # print(f"X cord: {pred[1][0][0]}")
+            # print(f"Y cord: {pred[1][0][1]}")
             all_words.append(pred[0])
-    reading = ''.join(all_words).upper().replace(' ','').replace('O','0')
+    reading = ','.join(all_words).upper().replace(' ','').replace('O','0')
 
     return (image_url, reading)
 # Plot the predictions
@@ -59,8 +63,15 @@ def main():
         folder, file = url.split('/')
         for image_info in images_info:
             if image_info[0] == file:
-                if image_info[1] in prediction:
+                correctness = 0
+                for text_pred in prediction.split(','):
+                    if text_pred in image_info[1]:
+                        correctness += 1
+                if correctness > 0:
                     correct += 1
+                else:
+                    print(f"Incorrect-------\nFile: {file}\n Prediction: {prediction}\n Actual: {image_info[1]}\n")
+                        
     print(f"{(correct/total)* 100:.3f}% correct")
     
 
