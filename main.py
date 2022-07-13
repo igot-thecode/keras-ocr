@@ -9,7 +9,8 @@ import multiprocessing
 
 # keras-ocr will automatically download pretrained
 # weights for the detector and recognizer.
-pipeline = keras_ocr.pipeline.Pipeline()
+pipeline = keras_ocr.pipeline.Pipeline() 
+#NOTE: we are at the mercy of their pretrained model
 
 def get_image_data(image_url):
     #print(image_url)
