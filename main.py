@@ -1,3 +1,4 @@
+#NOTE: link to improve accuracy https://github.com/faustomorales/keras-ocr/issues/30
 import pathlib
 import matplotlib.pyplot as plt
 import keras_ocr
@@ -64,6 +65,8 @@ def main():
         for image_info in images_info:
             if image_info[0] == file:
                 correctness = 0
+                #FIXME: need to have better way to get true accuracy
+                #NOTE: can still find ways to actually improve accuracy
                 for text_pred in prediction.split(','):
                     if text_pred in image_info[1]:
                         correctness += 1
